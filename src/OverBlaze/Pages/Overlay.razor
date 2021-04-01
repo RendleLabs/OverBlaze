@@ -1,0 +1,40 @@
+﻿@page "/Overlay"
+@using OverBlaze.Services
+@using System.Threading
+@using System.Collections.ObjectModel
+@layout EmptyLayout
+@inject ControlBus ControlBus
+
+@foreach (var image in _images)
+{
+<img src="@image.Path" style="@image.Style" />
+}
+
+@code {
+
+  List<DisplayImage> _images = new();
+
+  protected override Task OnInitializedAsync()
+  {
+    ControlBus.DisplayImage += DisplayImage;
+    ControlBus.HideImage += HideImage;
+    return Task.CompletedTask;
+  }
+
+  private async Task DisplayImage(DisplayImage image)
+  {
+    _images.Add(image);
+    await InvokeAsync(StateHasChanged);
+  }
+
+  private async Task HideImage(HideImage image)
+  {
+    var current = _images.FirstOrDefault(i => i.Path == image.Path);
+    if (current is not null)
+    {
+      _images.Remove(current);
+      await InvokeAsync(StateHasChanged);
+    }
+  }
+
+}

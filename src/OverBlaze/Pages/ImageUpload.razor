@@ -1,0 +1,55 @@
+﻿@using OverBlaze.Models
+@using System.Diagnostics
+@using OverBlaze.Services
+@inject ImageStore ImageStore
+
+<EditForm Model="@_uploadImageModel" OnValidSubmit="ImageUploadSubmit">
+  <div class="form-group">
+  <label>File
+    <InputFile OnChange="OnInputFileChange"/>
+  </label>
+  </div>
+  <div class="form-group">
+  <label>Name
+    <InputText @bind-Value="_uploadImageModel.Name"/>
+  </label>
+  </div>
+  <div class="form-group">
+  <label>Height
+    <InputNumber @bind-Value="_uploadImageModel.Height"/>
+  </label>
+  </div>
+  <div class="form-group">
+  <label>Width
+    <InputNumber @bind-Value="_uploadImageModel.Width"/>
+  </label>
+  </div>
+  <div class="form-group">
+  <label>Top
+    <InputNumber @bind-Value="_uploadImageModel.Top"/>
+  </label>
+  </div>
+  <div class="form-group">
+    <label>Left
+      <InputNumber @bind-Value="_uploadImageModel.Left"/>
+    </label>
+  </div>
+  <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+  UploadImageModel _uploadImageModel = new();
+  IBrowserFile _file;
+  
+  private async Task ImageUploadSubmit()
+  {
+    await ImageStore.AddAsync(_file.OpenReadStream(), _file.ContentType, _uploadImageModel);
+  }
+
+  private Task OnInputFileChange(InputFileChangeEventArgs arg)
+  {
+    _file = arg.File;
+    return Task.CompletedTask;
+  }
+
+}
