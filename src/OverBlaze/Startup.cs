@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Blazored.Modal;
+using Bot;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +39,8 @@ namespace OverBlaze
             
             services.AddSingleton<ControlBus>();
             services.AddSingleton<ImageStore>();
+
+            services.AddHostedService<TwitchBot>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,6 +66,7 @@ namespace OverBlaze
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapGet("/images/{name}", ImageEndpoint.Get);
+                endpoints.MapGet("/show/{image}", ShowEndpoint.Show);
                 endpoints.MapFallbackToPage("/_Host");
             });
         }

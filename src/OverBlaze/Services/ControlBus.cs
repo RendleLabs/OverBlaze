@@ -33,7 +33,7 @@ namespace OverBlaze.Services
             {
                 switch (item)
                 {
-                    case DisplayImage image:
+                    case ToggleImage image:
                         if (DisplayImage is not null)
                         {
                             await DisplayImage.Invoke(image);
@@ -54,7 +54,7 @@ namespace OverBlaze.Services
             return _channel.Reader.ReadAllAsync(token);
         }
 
-        public event Func<DisplayImage, Task> DisplayImage;
+        public event Func<ToggleImage, Task> DisplayImage;
         
         public event Func<HideImage, Task> HideImage;
     }

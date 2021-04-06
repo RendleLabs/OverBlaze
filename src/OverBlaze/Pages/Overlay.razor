@@ -7,34 +7,31 @@
 
 @foreach (var image in _images)
 {
-<img src="@image.Path" style="@image.Style" />
+<img src="/images/@image.Path.TrimStart('/')" style="@image.Style" />
 }
 
 @code {
 
-  List<DisplayImage> _images = new();
+  List<ToggleImage> _images = new();
 
   protected override Task OnInitializedAsync()
   {
-    ControlBus.DisplayImage += DisplayImage;
-    ControlBus.HideImage += HideImage;
+    ControlBus.DisplayImage += ToggleImage;
     return Task.CompletedTask;
   }
 
-  private async Task DisplayImage(DisplayImage image)
+  private async Task ToggleImage(ToggleImage image)
   {
-    _images.Add(image);
-    await InvokeAsync(StateHasChanged);
-  }
-
-  private async Task HideImage(HideImage image)
-  {
-    var current = _images.FirstOrDefault(i => i.Path == image.Path);
-    if (current is not null)
+    var existing = _images.FirstOrDefault(i => i.Path == image.Path);
+    if (existing is not null)
     {
-      _images.Remove(current);
-      await InvokeAsync(StateHasChanged);
+      _images.Remove(existing);
     }
+    else
+    {
+      _images.Add(image);
+    }
+    await InvokeAsync(StateHasChanged);
   }
 
 }

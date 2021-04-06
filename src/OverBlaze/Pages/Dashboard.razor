@@ -1,10 +1,16 @@
 ﻿@page "/Dashboard"
 @using OverBlaze.Services
+@inject ImageStore ImageStore;
 @inject ControlBus ControlBus
 @inject IModalService Modal;
 <h3>Dashboard</h3>
 
-<button @onclick="PerryClick">Perry</button>
+@foreach (var imageName in _imageNames)
+{
+  <button @onclick="_ => ImageClick(imageName)">@imageName</button>
+}
+
+@* <button @onclick="PerryClick">Perry</button> *@
 
 <button @onclick="UploadNewImage">Upload new image...</button>
 
@@ -12,25 +18,26 @@
 
   bool _perryVisible;
 
+  string[] _imageNames = Array.Empty<string>();
+
+  protected override Task OnInitializedAsync()
+  {
+    _imageNames = ImageStore.GetImageNames().ToArray();
+    return Task.CompletedTask;
+  }
+
+  async Task ImageClick(string imageName)
+  {
+    
+  }
+
   async Task PerryClick()
   {
-    if (!_perryVisible)
+    await ControlBus.AddAsync(new ToggleImage
     {
-      await ControlBus.AddAsync(new DisplayImage
-      {
-        Path = "/Perry_the_platypus.png",
-        Style = "height: 30vh; left: 40vw; top: 35vh; position: absolute;",
-      });
-      _perryVisible = true;
-    }
-    else
-    {
-      await ControlBus.AddAsync(new HideImage
-      {
-        Path = "/Perry_the_platypus.png",
-      });
-      _perryVisible = false;
-    }
+      Path = "/Perry_the_platypus.png",
+      Style = "height: 30vh; left: 40vw; top: 35vh; position: absolute;",
+    });
   }
 
   private void UploadNewImage()

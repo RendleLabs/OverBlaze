@@ -38,12 +38,15 @@
 </EditForm>
 
 @code {
+  [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+  
   UploadImageModel _uploadImageModel = new();
   IBrowserFile _file;
   
   private async Task ImageUploadSubmit()
   {
     await ImageStore.AddAsync(_file.OpenReadStream(), _file.ContentType, _uploadImageModel);
+    await ModalInstance.CloseAsync(ModalResult.Ok(_uploadImageModel.Name));
   }
 
   private Task OnInputFileChange(InputFileChangeEventArgs arg)
