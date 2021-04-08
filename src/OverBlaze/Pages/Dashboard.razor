@@ -1,8 +1,13 @@
 ﻿@page "/Dashboard"
 @using OverBlaze.Services
+@using Blazored.LocalStorage
 @inject ImageStore ImageStore;
 @inject ControlBus ControlBus
 @inject IModalService Modal;
+@inject TwitchAuth TwitchAuth;
+@inject NavigationManager NavigationManager;
+@inject ILocalStorageService LocalStorageService;
+
 <h3>Dashboard</h3>
 
 @foreach (var imageName in _imageNames)
@@ -20,10 +25,19 @@
 
   string[] _imageNames = Array.Empty<string>();
 
-  protected override Task OnInitializedAsync()
+  protected override async Task OnAfterRenderAsync(bool firstRender)
   {
+    if (string.IsNullOrEmpty(TwitchAuth.Token))
+    {
+      var accessToken = await LocalStorageService.GetItemAsStringAsync("twitch_access_token");
+      var idToken = await LocalStorageService.GetItemAsStringAsync("twitch_id_token");
+      if (!TwitchAuth.TrySetTokens(idToken, accessToken))
+      {
+        var authenticationUri = TwitchAuth.GetAuthenticationUri();
+        NavigationManager.NavigateTo(authenticationUri);
+      }
+    }
     _imageNames = ImageStore.GetImageNames().ToArray();
-    return Task.CompletedTask;
   }
 
   async Task ImageClick(string imageName)

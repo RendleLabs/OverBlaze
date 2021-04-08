@@ -19,16 +19,23 @@ namespace Bot
     {
         private readonly ControlBus _controlBus;
         private readonly ImageStore _imageStore;
-        private readonly TwitchClient _client;
-        private readonly ConnectionCredentials _credentials;
+        private readonly TwitchAuth _twitchAuth;
+        private TwitchClient _client;
+        private ConnectionCredentials _credentials;
 
-        public TwitchBot(IConfiguration config, ControlBus controlBus, ImageStore imageStore)
+        public TwitchBot(IConfiguration config, ControlBus controlBus, ImageStore imageStore, TwitchAuth twitchAuth)
         {
             _controlBus = controlBus;
             _imageStore = imageStore;
+            _twitchAuth = twitchAuth;
+            
+            _twitchAuth.TokenSet += TwitchAuthOnTokenSet;
+        }
 
-            var userName = config.GetValue<string>("Twitch:UserName");
-            var accessToken = config.GetValue<string>("Twitch:AccessToken");
+        private void TwitchAuthOnTokenSet()
+        {
+            var userName = _twitchAuth.UserName;
+            var accessToken = _twitchAuth.Token;
 
             _credentials = new ConnectionCredentials(userName, accessToken);
             var clientOptions = new ClientOptions
@@ -36,18 +43,18 @@ namespace Bot
                 MessagesAllowedInPeriod = 750,
                 ThrottlingPeriod = TimeSpan.FromSeconds(30)
             };
-            WebSocketClient customClient = new WebSocketClient(clientOptions);
+            WebSocketClient customClient = new(clientOptions);
             _client = new TwitchClient(customClient);
-        }
-
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            _client.Initialize(_credentials, "markrendle");
+            
+            _client.Initialize(_credentials, _twitchAuth.UserName.ToLowerInvariant());
 
             _client.OnMessageReceived += OnMessageReceived;
 
             _client.Connect();
+        }
 
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        {
             var completionSource = new TaskCompletionSource();
             stoppingToken.Register(() => completionSource.SetResult());
             return completionSource.Task;

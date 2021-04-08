@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.LocalStorage;
 using Blazored.Modal;
 using Bot;
 using Microsoft.AspNetCore.Builder;
@@ -36,11 +37,14 @@ namespace OverBlaze
             services.AddServerSideBlazor();
 
             services.AddBlazoredModal();
+            services.AddBlazoredLocalStorage();
             
             services.AddSingleton<ControlBus>();
             services.AddSingleton<ImageStore>();
 
             services.AddHostedService<TwitchBot>();
+
+            services.AddSingleton<TwitchAuth>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
