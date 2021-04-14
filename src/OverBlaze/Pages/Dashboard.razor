@@ -8,16 +8,18 @@
 @inject NavigationManager NavigationManager;
 @inject ILocalStorageService LocalStorageService;
 
-<h3>Dashboard</h3>
+<h1>Dashboard</h1>
 
+<div class="row">
 @foreach (var imageName in _imageNames)
 {
-  <button @onclick="_ => ImageClick(imageName)">@imageName</button>
+  <div class="col-1">
+    <button @onclick="_ => ImageClick(imageName)" class="btn btn-outline-secondary btn-lg">@imageName</button>
+  </div>
 }
+</div>
 
-@* <button @onclick="PerryClick">Perry</button> *@
-
-<button @onclick="UploadNewImage">Upload new image...</button>
+<a href="/AddImage" class="btn btn-primary">Upload new image...</a>
 
 @code {
 
@@ -38,25 +40,15 @@
       }
     }
     _imageNames = ImageStore.GetImageNames().ToArray();
+    StateHasChanged();
   }
 
   async Task ImageClick(string imageName)
   {
-    
-  }
-
-  async Task PerryClick()
-  {
     await ControlBus.AddAsync(new ToggleImage
     {
-      Path = "/Perry_the_platypus.png",
-      Style = "height: 30vh; left: 40vw; top: 35vh; position: absolute;",
+      Name = imageName,
     });
-  }
-
-  private void UploadNewImage()
-  {
-    Modal.Show<ImageUpload>("Upload new image");
   }
 
 }

@@ -18,8 +18,7 @@ namespace OverBlaze.Endpoints
 
             var command = new ToggleImage
             {
-                Path = "/Perry_the_platypus.png",
-                Style = "height: 30vh; left: 40vw; top: 35vh; position: absolute;",
+                Name = image.ToString(),
             };
 
             await controlBus.AddAsync(command);

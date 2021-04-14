@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -64,28 +65,24 @@ namespace Bot
         {
             if (TryGetCommand(e.ChatMessage.Message, out var command))
             {
+                if (command.Equals("images"))
+                {
+                    var images = _imageStore.GetImageNames().Select(s => $"!{s}");
+                    var text = string.Join(", ", images);
+                    var message = $"These image commands are available: {text}";
+                    _client.SendMessage(_twitchAuth.UserName.ToLowerInvariant(), message);
+                }
                 var image = await _imageStore.GetImage(command);
                 if (image is not null)
                 {
                     var toggleImage = new ToggleImage
                     {
-                        Path = $"/{image.Name}",
-                        Style = "height: 30vh; left: 40vw; top: 35vh; position: absolute;",
+                        Name = image.Name,
                     };
 
                     await _controlBus.AddAsync(toggleImage);
                 }
             }
-            // if (e.ChatMessage.Message.Equals("!perry", StringComparison.OrdinalIgnoreCase))
-            // {
-            //     var command = new ToggleImage
-            //     {
-            //         Path = "/Perry_the_platypus.png",
-            //         Style = "height: 30vh; left: 40vw; top: 35vh; position: absolute;",
-            //     };
-            //
-            //     await _controlBus.AddAsync(command);
-            // }
         }
 
         private bool TryGetCommand(ReadOnlySpan<char> text, [NotNullWhen(true)] out string? command)

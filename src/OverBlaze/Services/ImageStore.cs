@@ -103,30 +103,7 @@ namespace OverBlaze.Services
 
             if (model is null) return null;
 
-            // "height: 30vh; left: 40vw; top: 35vh; position: absolute;",
-
-            var builder = new StringBuilder("position: absolute;");
-            if (model.Height.HasValue)
-            {
-                builder.Append($" height: {model.Height.Value}vh");
-            }
-
-            if (model.Width.HasValue)
-            {
-                builder.Append($" width: {model.Width.Value}vw");
-            }
-
-            if (model.Top.HasValue)
-            {
-                builder.Append($" top: {model.Top.Value}vh");
-            }
-
-            if (model.Left.HasValue)
-            {
-                builder.Append($" left: {model.Left.Value}vw");
-            }
-
-            var imageModel = new ImageModel(name, imageFile, builder.ToString());
+            var imageModel = new ImageModel(name, imageFile, model.Css);
             _cache[name] = imageModel;
             return imageModel;
         }

@@ -1,0 +1,14 @@
+﻿.image-preview-container {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #4e555b;
+    height: 90vmin;
+    width: 160vmin;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.image-preview {
+    position: absolute;
+}

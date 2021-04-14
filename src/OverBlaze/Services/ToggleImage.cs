@@ -2,7 +2,6 @@
 {
     public class ToggleImage
     {
-        public string Path { get; init; }
-        public string Style { get; init; }
+        public string Name { get; init; }
     }
 }
