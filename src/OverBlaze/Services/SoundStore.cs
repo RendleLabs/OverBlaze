@@ -1,35 +1,32 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using OverBlaze.Models;
 
 namespace OverBlaze.Services
 {
-    public class ImageStore
+    public class SoundStore
     {
-        private readonly Dictionary<string, ImageModel?> _cache = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, SoundModel?> _cache = new(StringComparer.OrdinalIgnoreCase);
         private readonly string _baseDirectory;
 
-        public ImageStore()
+        public SoundStore()
         {
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            _baseDirectory = Path.Combine(appData, "OverBlaze", "Images");
+            _baseDirectory = Path.Combine(appData, "OverBlaze", "Sounds");
         }
         
-        public async Task AddAsync(Stream stream, string contentType, UploadImageModel model)
+        public async Task AddAsync(Stream stream, string contentType, UploadSoundModel model)
         {
             var directory = Path.Combine(_baseDirectory, model.Name);
             Directory.CreateDirectory(directory);
+            
             var fileName = contentType.ToLower() switch
             {
-                "image/png" => "image.png",
-                "image/gif" => "image.gif",
-                "image/jpeg" => "image.jpg",
+                "audio/mpeg" => "sound.mp3",
                 _ => null,
             };
 
@@ -52,11 +49,11 @@ namespace OverBlaze.Services
         {
             var directory = Path.Combine(_baseDirectory, name);
             if (!Directory.Exists(directory)) return null;
-            return Directory.EnumerateFiles(directory, "image.*")
+            return Directory.EnumerateFiles(directory, "sound.*")
                 .FirstOrDefault();
         }
 
-        public IEnumerable<string> GetImageNames()
+        public IEnumerable<string> GetSoundNames()
         {
             foreach (var directory in Directory.EnumerateDirectories(_baseDirectory))
             {
@@ -64,29 +61,29 @@ namespace OverBlaze.Services
             }
         }
 
-        public ValueTask<ImageModel?> GetImage(string name)
+        public ValueTask<SoundModel?> GetSound(string name)
         {
-            if (_cache.TryGetValue(name, out var imageModel))
+            if (_cache.TryGetValue(name, out var soundModel))
             {
-                return new ValueTask<ImageModel?>(imageModel);
+                return new ValueTask<SoundModel?>(soundModel);
             }
             
             var directory = Path.Combine(_baseDirectory, name);
             if (!Directory.Exists(directory))
             {
-                return new ValueTask<ImageModel?>((ImageModel?) null);
+                return new ValueTask<SoundModel?>((SoundModel?) null);
             }
 
-            return new ValueTask<ImageModel?>(CreateImageModelAsync(directory, name));
+            return new ValueTask<SoundModel?>(CreateSoundModelAsync(directory, name));
         }
 
-        private async Task<ImageModel?> CreateImageModelAsync(string directory, string name)
+        private async Task<SoundModel?> CreateSoundModelAsync(string directory, string name)
         {
             var infoFile = Path.Combine(directory, "info.json");
             if (!File.Exists(infoFile)) return null;
 
-            var imageFile = Directory.EnumerateFiles(directory, "image.*").FirstOrDefault();
-            if (imageFile == null) return null;
+            var soundFile = Directory.EnumerateFiles(directory, "sound.*").FirstOrDefault();
+            if (soundFile == null) return null;
 
             UploadImageModel? model;
             try
@@ -103,9 +100,9 @@ namespace OverBlaze.Services
 
             if (model is null) return null;
 
-            var imageModel = new ImageModel(name, imageFile, model.Css, model.Sound);
-            _cache[name] = imageModel;
-            return imageModel;
+            var soundModel = new SoundModel(name, soundFile, model.Css);
+            _cache[name] = soundModel;
+            return soundModel;
         }
     }
 }

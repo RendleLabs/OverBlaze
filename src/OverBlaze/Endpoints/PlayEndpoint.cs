@@ -5,18 +5,18 @@ using OverBlaze.Services;
 
 namespace OverBlaze.Endpoints
 {
-    public static class ShowEndpoint
+    public static class PlayEndpoint
     {
-        public static async Task Show(HttpContext context)
+        public static async Task Play(HttpContext context)
         {
             var controlBus = context.RequestServices.GetRequiredService<ControlBus>();
-            if (!context.Request.RouteValues.TryGetValue("image", out var image))
+            if (!context.Request.RouteValues.TryGetValue("sound", out var sound))
             {
                 context.Response.StatusCode = 404;
                 return;
             }
 
-            var command = new ToggleImage(image.ToString());
+            var command = new PlaySound(sound.ToString());
 
             await controlBus.AddAsync(command);
             context.Response.StatusCode = 200;

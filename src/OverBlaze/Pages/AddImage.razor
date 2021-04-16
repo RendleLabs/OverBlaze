@@ -18,6 +18,10 @@
         <div class="form-group">
           <InputTextArea @bind-Value="_imageStyle" placeholder="CSS" class="form-control"/>
         </div>
+        <div class="form-group">
+          <label>Sound:</label>
+          <InputText @bind-Value="_uploadImageModel.Sound"></InputText>
+        </div>
         <div>
           <button type="submit" class="btn btn-success">Submit</button>
         </div>
@@ -32,6 +36,8 @@
 </div>
 
 @code {
+  const long MaxUploadSize = 1024 * 1024 * 4;
+  
   UploadImageModel _uploadImageModel = new();
   IBrowserFile _file;
   private ElementReference _image;
@@ -41,7 +47,7 @@
   private async Task ImageUploadSubmit()
   {
     _uploadImageModel.Css = _imageStyle;
-    await ImageStore.AddAsync(_file.OpenReadStream(), _file.ContentType, _uploadImageModel);
+    await ImageStore.AddAsync(_file.OpenReadStream(MaxUploadSize), _file.ContentType, _uploadImageModel);
   }
 
   private async Task OnInputFileChange(InputFileChangeEventArgs arg)

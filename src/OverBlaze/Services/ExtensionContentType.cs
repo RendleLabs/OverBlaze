@@ -10,6 +10,8 @@ namespace OverBlaze.Services
         private static readonly Dictionary<string, string> Lookup = new(StringComparer.OrdinalIgnoreCase)
         {
             [".png"] = "image/png",
+            [".gif"] = "image/gif",
+            [".mp3"] = "audio/mpeg",
         };
 
         public static bool TryGet(string fileName, [NotNullWhen(true)] out string? contentType)

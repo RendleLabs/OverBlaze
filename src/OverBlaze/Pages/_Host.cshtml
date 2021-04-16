@@ -31,6 +31,15 @@
         <a class="dismiss">🗙</a>
     </div>
 
+<script>
+window.playSound = function (id, dotnetHelper) {
+    const element = document.getElementById(id);
+    element.addEventListener('ended', function () {
+        dotnetHelper.invokeMethodAsync('OnSoundEnded', id);
+    });
+    element.play();
+};
+</script>
 <script src="_framework/blazor.server.js"></script>
 <script src="_content/Blazored.Modal/blazored.modal.js"></script>
 </body>

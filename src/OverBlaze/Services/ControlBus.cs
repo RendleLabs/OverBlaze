@@ -34,15 +34,15 @@ namespace OverBlaze.Services
                 switch (item)
                 {
                     case ToggleImage image:
-                        if (DisplayImage is not null)
+                        if (ToggleImage is not null)
                         {
-                            await DisplayImage.Invoke(image);
+                            await ToggleImage.Invoke(image);
                         }
                         break;
-                    case HideImage image:
-                        if (HideImage is not null)
+                    case PlaySound sound:
+                        if (PlaySound is not null)
                         {
-                            await HideImage.Invoke(image);
+                            await PlaySound.Invoke(sound);
                         }
                         break;
                 }
@@ -54,8 +54,7 @@ namespace OverBlaze.Services
             return _channel.Reader.ReadAllAsync(token);
         }
 
-        public event Func<ToggleImage, Task> DisplayImage;
-        
-        public event Func<HideImage, Task> HideImage;
+        public event Func<ToggleImage, Task> ToggleImage;
+        public event Func<PlaySound, Task> PlaySound;
     }
 }

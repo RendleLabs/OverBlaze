@@ -8,7 +8,7 @@
 @inject NavigationManager NavigationManager;
 @inject ILocalStorageService LocalStorageService;
 
-<h1>Dashboard</h1>
+<h1>Dashboard!</h1>
 
 <div class="row">
 @foreach (var imageName in _imageNames)
@@ -19,7 +19,12 @@
 }
 </div>
 
-<a href="/AddImage" class="btn btn-primary">Upload new image...</a>
+<hr>
+
+<a href="/AddImage" class="btn btn-primary">Upload new image</a>
+<br>
+<a href="/AddSound" class="btn btn-primary">Upload new sound</a>
+
 
 @code {
 
@@ -45,10 +50,7 @@
 
   async Task ImageClick(string imageName)
   {
-    await ControlBus.AddAsync(new ToggleImage
-    {
-      Name = imageName,
-    });
+    await ControlBus.AddAsync(new ToggleImage(imageName));
   }
 
 }

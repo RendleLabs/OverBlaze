@@ -41,6 +41,7 @@ namespace OverBlaze
             
             services.AddSingleton<ControlBus>();
             services.AddSingleton<ImageStore>();
+            services.AddSingleton<SoundStore>();
 
             services.AddHostedService<TwitchBot>();
 
@@ -70,7 +71,9 @@ namespace OverBlaze
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapGet("/images/{name}", ImageEndpoint.Get);
+                endpoints.MapGet("/sounds/{name}", SoundEndpoint.Get);
                 endpoints.MapGet("/show/{image}", ShowEndpoint.Show);
+                endpoints.MapGet("/play/{sound}", PlayEndpoint.Play);
                 endpoints.MapFallbackToPage("/_Host");
             });
         }

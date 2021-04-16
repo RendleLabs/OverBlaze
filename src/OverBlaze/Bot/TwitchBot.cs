@@ -75,10 +75,7 @@ namespace Bot
                 var image = await _imageStore.GetImage(command);
                 if (image is not null)
                 {
-                    var toggleImage = new ToggleImage
-                    {
-                        Name = image.Name,
-                    };
+                    var toggleImage = new ToggleImage(image.Name);
 
                     await _controlBus.AddAsync(toggleImage);
                 }
