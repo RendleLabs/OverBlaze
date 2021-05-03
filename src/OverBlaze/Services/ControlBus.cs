@@ -45,6 +45,12 @@ namespace OverBlaze.Services
                             await PlaySound.Invoke(sound);
                         }
                         break;
+                    case Services.ClearAll:
+                        if (ClearAll is not null)
+                        {
+                            await ClearAll.Invoke();
+                        }
+                        break;
                 }
             }
         }
@@ -56,5 +62,6 @@ namespace OverBlaze.Services
 
         public event Func<ToggleImage, Task> ToggleImage;
         public event Func<PlaySound, Task> PlaySound;
+        public event Func<Task> ClearAll;
     }
 }

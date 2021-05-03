@@ -1,7 +1,5 @@
 ﻿@page "/Overlay"
 @using OverBlaze.Services
-@using System.Threading
-@using System.Collections.ObjectModel
 @using OverBlaze.Models
 @layout EmptyLayout
 @inject ControlBus ControlBus
@@ -29,7 +27,15 @@
   {
     ControlBus.ToggleImage += ToggleImage;
     ControlBus.PlaySound += PlaySound;
+    ControlBus.ClearAll += ClearAll;
     return Task.CompletedTask;
+  }
+
+  private async Task ClearAll()
+  {
+    _images.Clear();
+    _sounds.Clear();
+    await InvokeAsync(StateHasChanged);
   }
 
   private async Task PlaySound(PlaySound play)

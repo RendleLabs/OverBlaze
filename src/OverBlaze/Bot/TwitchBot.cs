@@ -7,12 +7,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using OverBlaze.Services;
+using TwitchLib.Api;
+using TwitchLib.Api.Core;
+using TwitchLib.Api.Core.RateLimiter;
+using TwitchLib.Api.Helix;
+using TwitchLib.Api.Services;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
+using TwitchLib.PubSub;
+using TwitchLib.PubSub.Events;
 
 namespace Bot
 {
@@ -20,16 +28,23 @@ namespace Bot
     {
         private readonly ControlBus _controlBus;
         private readonly ImageStore _imageStore;
+        private readonly SoundStore _soundStore;
         private readonly TwitchAuth _twitchAuth;
+        private readonly ILogger<TwitchBot> _logger;
         private TwitchClient _client;
+        private TwitchPubSub _pubSub;
         private ConnectionCredentials _credentials;
 
-        public TwitchBot(IConfiguration config, ControlBus controlBus, ImageStore imageStore, TwitchAuth twitchAuth)
+        public TwitchBot(IConfiguration config, ControlBus controlBus,
+            ImageStore imageStore, SoundStore soundStore,
+            TwitchAuth twitchAuth, ILogger<TwitchBot> logger)
         {
             _controlBus = controlBus;
             _imageStore = imageStore;
+            _soundStore = soundStore;
             _twitchAuth = twitchAuth;
-            
+            _logger = logger;
+
             _twitchAuth.TokenSet += TwitchAuthOnTokenSet;
         }
 
@@ -46,12 +61,26 @@ namespace Bot
             };
             WebSocketClient customClient = new(clientOptions);
             _client = new TwitchClient(customClient);
-            
             _client.Initialize(_credentials, _twitchAuth.UserName.ToLowerInvariant());
-
             _client.OnMessageReceived += OnMessageReceived;
-
             _client.Connect();
+            
+            _pubSub = new TwitchPubSub();
+            _pubSub.OnChannelPointsRewardRedeemed += OnChannelPointsRewardRedeemed;
+            _pubSub.OnPubSubServiceError += OnPubSubServiceError;
+            _pubSub.ListenToChannelPoints(_twitchAuth.UserId);
+            _pubSub.Connect();
+            _pubSub.SendTopics(accessToken);
+        }
+
+        private void OnPubSubServiceError(object? sender, OnPubSubServiceErrorArgs e)
+        {
+            _logger.LogError(e.Exception, e.Exception.Message);
+        }
+
+        private void OnChannelPointsRewardRedeemed(object? sender, OnChannelPointsRewardRedeemedArgs e)
+        {
+            _logger.LogInformation($"Reward redeemed: {e.RewardRedeemed.Redemption.Reward.Title}");
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -71,13 +100,22 @@ namespace Bot
                     var text = string.Join(", ", images);
                     var message = $"These image commands are available: {text}";
                     _client.SendMessage(_twitchAuth.UserName.ToLowerInvariant(), message);
+                    return;
                 }
                 var image = await _imageStore.GetImage(command);
                 if (image is not null)
                 {
                     var toggleImage = new ToggleImage(image.Name);
-
                     await _controlBus.AddAsync(toggleImage);
+                    return;
+                }
+
+                var sound = await _soundStore.GetSound(command);
+                if (sound is not null)
+                {
+                    var playSound = new PlaySound(sound.Name);
+                    await _controlBus.AddAsync(playSound);
+                    return;
                 }
             }
         }

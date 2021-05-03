@@ -8,7 +8,9 @@
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
     <PackageReference Include="Blazored.Modal" Version="6.0.1" />
+    <PackageReference Include="TwitchLib.Api" Version="3.2.3" />
     <PackageReference Include="TwitchLib.Client" Version="3.2.1" />
+    <PackageReference Include="TwitchLib.PubSub" Version="3.2.3-preview-5500be4a524d8812e7bd37de4288610422b41fe6" />
   </ItemGroup>
 
 </Project>

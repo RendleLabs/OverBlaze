@@ -2,6 +2,7 @@
 @using OverBlaze.Services
 @using Blazored.LocalStorage
 @inject ImageStore ImageStore;
+@inject SoundStore SoundStore;
 @inject ControlBus ControlBus
 @inject IModalService Modal;
 @inject TwitchAuth TwitchAuth;
@@ -11,12 +12,22 @@
 <h1>Dashboard!</h1>
 
 <div class="row">
-@foreach (var imageName in _imageNames)
-{
-  <div class="col-1">
-    <button @onclick="_ => ImageClick(imageName)" class="btn btn-outline-secondary btn-lg">@imageName</button>
+  <div class="col-4">
+    <h2>Images</h2>
+    @foreach (var imageName in _imageNames)
+    {
+      <button @onclick="_ => ImageClick(imageName)"
+              class="btn btn-success-secondary btn-lg btn-block">@imageName</button>
+    }
   </div>
-}
+  <div class="col-4">
+    <h2>Sounds</h2>
+    @foreach (var soundName in _soundNames)
+    {
+      <button @onclick="_ => SoundClick(soundName)"
+              class="btn btn-error-secondary btn-lg btn-block">@soundName</button>
+    }
+  </div>
 </div>
 
 <hr>
@@ -31,26 +42,33 @@
   bool _perryVisible;
 
   string[] _imageNames = Array.Empty<string>();
+  string[] _soundNames = Array.Empty<string>();
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
-    if (string.IsNullOrEmpty(TwitchAuth.Token))
-    {
-      var accessToken = await LocalStorageService.GetItemAsStringAsync("twitch_access_token");
-      var idToken = await LocalStorageService.GetItemAsStringAsync("twitch_id_token");
-      if (!TwitchAuth.TrySetTokens(idToken, accessToken))
-      {
-        var authenticationUri = TwitchAuth.GetAuthenticationUri();
-        NavigationManager.NavigateTo(authenticationUri);
-      }
-    }
+    // if (string.IsNullOrEmpty(TwitchAuth.Token))
+    // {
+    //   var accessToken = await LocalStorageService.GetItemAsStringAsync("twitch_access_token");
+    //   var idToken = await LocalStorageService.GetItemAsStringAsync("twitch_id_token");
+    //   if (!TwitchAuth.TrySetTokens(idToken, accessToken))
+    //   {
+    //     var authenticationUri = TwitchAuth.GetAuthenticationUri();
+    //     NavigationManager.NavigateTo(authenticationUri);
+    //   }
+    // }
     _imageNames = ImageStore.GetImageNames().ToArray();
+    _soundNames = SoundStore.GetSoundNames().ToArray();
     StateHasChanged();
   }
 
   async Task ImageClick(string imageName)
   {
     await ControlBus.AddAsync(new ToggleImage(imageName));
+  }
+
+  private async Task SoundClick(string soundName)
+  {
+    await ControlBus.AddAsync(new PlaySound(soundName));
   }
 
 }

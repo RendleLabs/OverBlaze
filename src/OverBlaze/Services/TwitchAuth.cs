@@ -37,6 +37,11 @@ namespace OverBlaze.Services
                 {
                     UserName = usernameProperty.GetString();
                 }
+
+                if (json.RootElement.TryGetProperty("sub", out var userIdProperty))
+                {
+                    UserId = userIdProperty.GetString();
+                }
             }
             Token = accessToken;
             TokenSet?.Invoke();
@@ -62,6 +67,7 @@ namespace OverBlaze.Services
 
         public string? UserName { get; private set; }
         public string? Token { get; private set; }
+        public string? UserId { get; private set; }
 
         public string GetAuthenticationUri()
         {
@@ -71,7 +77,7 @@ namespace OverBlaze.Services
 
             return $"https://id.twitch.tv/oauth2/authorize?client_id={ClientId}" +
                    $"&redirect_uri={redirectUri}&response_type=token+id_token" +
-                   "&scope=openid+chat:edit+chat:read";
+                   "&scope=openid+chat:edit+chat:read+channel:read:redemptions";
         }
 
         public event Action TokenSet;
