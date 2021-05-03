@@ -1,0 +1,34 @@
+﻿@using OverBlaze.Services
+@using Blazored.LocalStorage
+@inject TwitchAuth TwitchAuth;
+@inject ILocalStorageService LocalStorageService;
+
+<div>
+  @if (_loginName is null)
+  {
+    <a href="@TwitchAuth.GetAuthenticationUri()" class="btn btn-dark">Connect with Twitch</a>
+  }
+  else
+  {
+    <span>@_loginName</span>
+  }
+</div>
+
+@code {
+  string? _loginName;
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (string.IsNullOrEmpty(TwitchAuth.Token))
+    {
+      var accessToken = await LocalStorageService.GetItemAsStringAsync("twitch_access_token");
+      var idToken = await LocalStorageService.GetItemAsStringAsync("twitch_id_token");
+      TwitchAuth.TrySetTokens(idToken, accessToken);
+    }
+    if (!string.IsNullOrEmpty(TwitchAuth.Token))
+    {
+      _loginName = TwitchAuth.UserName;
+      await InvokeAsync(StateHasChanged);
+    }
+  }
+}
