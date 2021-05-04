@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <UserSecretsId>5bdb0101-99dc-4b22-a60e-119111074c0d</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
