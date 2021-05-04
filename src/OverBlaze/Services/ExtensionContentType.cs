@@ -12,6 +12,7 @@ namespace OverBlaze.Services
             [".png"] = "image/png",
             [".gif"] = "image/gif",
             [".mp3"] = "audio/mpeg",
+            [".jpg"] = "image/jpeg"
         };
 
         public static bool TryGet(string fileName, [NotNullWhen(true)] out string? contentType)
