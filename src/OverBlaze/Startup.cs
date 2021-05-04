@@ -115,8 +115,13 @@ namespace OverBlaze
         private void ToggleOBSSource(bool toggle)
         {
             OBSWebsocket obsWebsocket = new OBSWebsocket();
+            var browserSourceName = "OverBlaze";
             obsWebsocket.Connect(Configuration.GetValue<string>("OBS:WebSocketUrl"), Configuration.GetValue<string>("OBS:WebSocketPassword"));
-            obsWebsocket.SetSourceRender("OverBlaze", toggle);
+            obsWebsocket.SetSourceRender(browserSourceName, toggle);
+            if(toggle)
+            {
+                obsWebsocket.RefreshBrowserSource(browserSourceName);
+            }
             obsWebsocket.Disconnect();
         }
     }
