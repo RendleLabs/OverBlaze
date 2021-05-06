@@ -1,0 +1,76 @@
+@page "/"
+@* @using OverBlaze.Services *@
+@inject PhotinoNET.PhotinoWindow Window
+@* @inject ImageStore ImageStore; *@
+@* @inject SoundStore SoundStore; *@
+@* @inject ServerClient ServerClient; *@
+
+@{
+  Window.SetIconFile("wwwroot/blazor.ico");
+}
+
+<h1>Dashboard!</h1>
+
+@* <div class="row"> *@
+@*   <div class="col-4"> *@
+@*     <h2>Images</h2> *@
+@*     @foreach (var imageName in _imageNames) *@
+@*     { *@
+@*       <button @onclick="_ => ImageClick(imageName)" *@
+@*               class="btn btn-success-secondary btn-lg btn-block"> *@
+@*         @imageName *@
+@*       </button> *@
+@*     } *@
+@*   </div> *@
+@*   <div class="col-4"> *@
+@*     <h2>Sounds</h2> *@
+@*     @foreach (var soundName in _soundNames) *@
+@*     { *@
+@*       <button @onclick="_ => SoundClick(soundName)" *@
+@*               class="btn btn-error-secondary btn-lg btn-block"> *@
+@*         @soundName *@
+@*       </button> *@
+@*     } *@
+@*   </div> *@
+@* </div> *@
+@* *@
+@* <hr> *@
+@* *@
+@* <a href="/AddImage" class="btn btn-primary">Upload new image</a> *@
+@* <br> *@
+@* <a href="/AddSound" class="btn btn-primary">Upload new sound</a> *@
+
+@code {
+
+  string[] _imageNames = Array.Empty<string>();
+  string[] _soundNames = Array.Empty<string>();
+
+  // protected override void OnInitialized()
+  // {
+    // _imageNames = ImageStore.GetImageNames().ToArray();
+    // _soundNames = SoundStore.GetSoundNames().ToArray();
+    // StateHasChanged();
+    // base.OnInitialized();
+  // }
+
+  // protected override async Task OnAfterRenderAsync(bool firstRender)
+  // {
+  //   _imageNames = ImageStore.GetImageNames().ToArray();
+  //   _soundNames = SoundStore.GetSoundNames().ToArray();
+  //   await InvokeAsync(StateHasChanged);
+  // //   StateHasChanged();
+  // }
+
+  private async Task ImageClick(string imageName)
+  {
+    // await ServerClient.ShowImage(imageName);
+  // await ControlBus.AddAsync(new ToggleImage(imageName));
+  }
+
+  private async Task SoundClick(string soundName)
+  {
+    // await ServerClient.PlaySound(soundName);
+  // await ControlBus.AddAsync(new PlaySound(soundName));
+  }
+
+}

@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CA636F04-22B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverBlaze", "src\OverBlaze\OverBlaze.csproj", "{48AF7384-4680-448F-B5F0-489F3C8DFBD0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OverBlazeDesktop", "src\OverBlazeDesktop\OverBlazeDesktop.csproj", "{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,8 +34,21 @@ Global
 		{48AF7384-4680-448F-B5F0-489F3C8DFBD0}.Release|x64.Build.0 = Release|Any CPU
 		{48AF7384-4680-448F-B5F0-489F3C8DFBD0}.Release|x86.ActiveCfg = Release|Any CPU
 		{48AF7384-4680-448F-B5F0-489F3C8DFBD0}.Release|x86.Build.0 = Release|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Debug|x64.Build.0 = Debug|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Debug|x86.Build.0 = Debug|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Release|x64.ActiveCfg = Release|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Release|x64.Build.0 = Release|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Release|x86.ActiveCfg = Release|Any CPU
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{48AF7384-4680-448F-B5F0-489F3C8DFBD0} = {CA636F04-22B2-451F-9FE5-C39B226AEA75}
+		{A5ACFED9-35A6-4FBE-820D-70F66FDC75E5} = {CA636F04-22B2-451F-9FE5-C39B226AEA75}
 	EndGlobalSection
 EndGlobal

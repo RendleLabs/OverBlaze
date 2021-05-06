@@ -55,7 +55,7 @@ namespace OverBlaze
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
             IHostApplicationLifetime applicationLifetime)
         {
-            applicationLifetime.ApplicationStarted.Register(() => StartBrowser(app));
+            // applicationLifetime.ApplicationStarted.Register(() => StartBrowser(app));
             applicationLifetime.ApplicationStarted.Register(() => ToggleOBSSource(true));
             applicationLifetime.ApplicationStopping.Register(() => ToggleOBSSource(false));
             
@@ -116,7 +116,10 @@ namespace OverBlaze
         {
             OBSWebsocket obsWebsocket = new OBSWebsocket();
             var browserSourceName = "OverBlaze";
-            obsWebsocket.Connect(Configuration.GetValue<string>("OBS:WebSocketUrl"), Configuration.GetValue<string>("OBS:WebSocketPassword"));
+            var obsWebSocketUrl = Configuration.GetValue<string>("OBS:WebSocketUrl");
+            var obsWebSocketPassword = Configuration.GetValue<string>("OBS:WebSocketPassword");
+            if (obsWebSocketUrl is null) return;
+            obsWebsocket.Connect(obsWebSocketUrl, obsWebSocketPassword);
             obsWebsocket.SetSourceRender(browserSourceName, toggle);
             if(toggle)
             {
