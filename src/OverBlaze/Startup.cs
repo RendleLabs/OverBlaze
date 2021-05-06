@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
+using OBSWebsocketDotNet;
 using OverBlaze.Data;
 using OverBlaze.Endpoints;
 using OverBlaze.Services;
@@ -55,6 +56,8 @@ namespace OverBlaze
             IHostApplicationLifetime applicationLifetime)
         {
             applicationLifetime.ApplicationStarted.Register(() => StartBrowser(app));
+            applicationLifetime.ApplicationStarted.Register(() => ToggleOBSSource(true));
+            applicationLifetime.ApplicationStopping.Register(() => ToggleOBSSource(false));
             
             if (env.IsDevelopment())
             {
@@ -107,6 +110,19 @@ namespace OverBlaze
             }
 
             Process.Start(start);
+        }
+
+        private void ToggleOBSSource(bool toggle)
+        {
+            OBSWebsocket obsWebsocket = new OBSWebsocket();
+            var browserSourceName = "OverBlaze";
+            obsWebsocket.Connect(Configuration.GetValue<string>("OBS:WebSocketUrl"), Configuration.GetValue<string>("OBS:WebSocketPassword"));
+            obsWebsocket.SetSourceRender(browserSourceName, toggle);
+            if(toggle)
+            {
+                obsWebsocket.RefreshBrowserSource(browserSourceName);
+            }
+            obsWebsocket.Disconnect();
         }
     }
 }

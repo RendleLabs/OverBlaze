@@ -8,7 +8,7 @@ namespace OverBlaze.Services
 {
     public class TwitchAuth
     {
-        private const string ClientId = "7mtekewyfkadmhxarxyrektpsrb9vq";
+        private readonly string ClientId;
         
         private readonly IConfiguration _configuration;
         private readonly ILocalStorageService _localStorageService;
@@ -17,6 +17,7 @@ namespace OverBlaze.Services
         public TwitchAuth(IConfiguration configuration)
         {
             _configuration = configuration;
+            ClientId =  _configuration.GetValue<string>("Twitch:ClientId") ?? "7mtekewyfkadmhxarxyrektpsrb9vq";
         }
 
         public bool TrySetTokens(string? idToken, string? accessToken)
