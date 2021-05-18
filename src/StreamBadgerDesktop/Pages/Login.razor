@@ -1,0 +1,36 @@
+﻿@page "/Login"
+@using System.Diagnostics
+@using System.Threading
+@using StreamBadgerDesktop.Services
+@inject LoginClient LoginClient
+@inject TwitchAuth TwitchAuth;
+@inject NavigationManager NavigationManager;
+
+<h1>Login</h1>
+
+<p>@Message</p>
+
+@code {
+
+  string Message = "Logging in using your default browser...";
+  string _sessionId;
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      _sessionId = Guid.NewGuid().ToString("N");
+      var psi = new ProcessStartInfo($"https://streambadger.com/login/{_sessionId}")
+      {
+        UseShellExecute = true
+      };
+      Process.Start(psi);
+      var sessionData = await LoginClient.PingAsync(_sessionId, CancellationToken.None);
+      if (sessionData.AccessToken is {Length: >0})
+      {
+        TwitchAuth.SetSessionData(sessionData);
+        NavigationManager.NavigateTo("/");
+      }
+    }
+  }
+}

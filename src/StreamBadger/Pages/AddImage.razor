@@ -1,0 +1,66 @@
+﻿@page "/AddImage"
+@using StreamBadger.Models
+@using StreamBadger.Services
+@using System.IO
+@inject ImageStore ImageStore
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-4">
+      <EditForm Model="@_uploadImageModel" OnValidSubmit="ImageUploadSubmit" class="form">
+        <div class="form-group">
+          <InputFile OnChange="OnInputFileChange" class="form-control-file"/>
+        </div>
+        <div class="form-group">
+          <label>Name:</label>
+          <InputText @bind-Value="_uploadImageModel.Name"></InputText>
+        </div>
+        <div class="form-group">
+          <InputTextArea @bind-Value="_imageStyle" placeholder="CSS" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label>Sound:</label>
+          <InputText @bind-Value="_uploadImageModel.Sound"></InputText>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+      </EditForm>
+    </div>
+    <div class="col-8">
+      <div class="image-preview-container">
+        <img src="@_imageSrc" class="image-preview" style="@_imageStyle">
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+  const long MaxUploadSize = 1024 * 1024 * 4;
+  
+  UploadImageModel _uploadImageModel = new();
+  IBrowserFile _file;
+  private ElementReference _image;
+  private string _imageSrc;
+  private string _imageStyle = "width: 50%;";
+
+  private async Task ImageUploadSubmit()
+  {
+    _uploadImageModel.Css = _imageStyle;
+    await ImageStore.AddAsync(_file.OpenReadStream(MaxUploadSize), _file.ContentType, _uploadImageModel);
+  }
+
+  private async Task OnInputFileChange(InputFileChangeEventArgs arg)
+  {
+    _file = arg.File;
+    byte[] bytes;
+    using (var stream = _file.OpenReadStream())
+    using (var memory = new MemoryStream())
+    {
+      await stream.CopyToAsync(memory);
+      bytes = memory.ToArray();
+      _imageSrc = $"data:{_file.ContentType};base64," + Convert.ToBase64String(bytes);
+      StateHasChanged();
+    }
+  }
+}

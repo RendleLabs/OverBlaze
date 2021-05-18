@@ -1,0 +1,16 @@
+﻿@using StreamBadgerDesktop.Services
+@inject TwitchAuth TwitchAuth;
+
+<div>
+  @if (TwitchAuth.SessionData?.AccessToken is {Length: >0})
+  {
+    <span>@TwitchAuth.SessionData.Name</span>
+  }
+  else
+  {
+    <a href="/Login" class="btn btn-dark">Connect with Twitch</a>
+  }
+</div>
+
+@code {
+}
